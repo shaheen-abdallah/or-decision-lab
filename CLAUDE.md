@@ -20,4 +20,4 @@ Commit at the end of a session in plain English with the status in brackets, e.g
 This repo will be public. All data is invented. Never copy his course material (the IE0312 simulation case, its CSVs, Taha examples, past papers) or name former employers' clients, projects or colleagues.
 
 ## Environment
-`.venv` in the repo (gitignored), made with `uv venv --python 3.12` (system Python 3.9 is too old for the CPLEX wheels). Run `.venv/bin/python -m plantlab plan|fit|simulate|loop` and `.venv/bin/pytest`.
+`.venv` in the repo (gitignored), made with `uv venv --python 3.12` (system Python 3.9 is too old for the CPLEX wheels). Run `.venv/bin/python -m plantlab plan|fit|simulate|loop`, `.venv/bin/streamlit run app/streamlit_app.py` and `.venv/bin/pytest`. The assistant (`ai/`) is optional: the app and the tests never need an API key.

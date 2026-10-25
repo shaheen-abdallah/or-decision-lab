@@ -12,6 +12,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+app = ["streamlit>=1.50", "pandas>=2", "altair>=5"]   # the app: streamlit run app/streamlit_app.py
+ai = ["anthropic>=2.3"]                                 # optional assistant (needs ANTHROPIC_API_KEY)
 dev = ["pytest>=8"]
 
 [project.scripts]

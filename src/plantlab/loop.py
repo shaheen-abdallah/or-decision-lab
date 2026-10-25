@@ -98,6 +98,10 @@ class ScenarioResult:
         return [s.name for s in self.mix.stations.values() if s.binding]
 
     def gap_table(self):
+        return table(*self.gap_rows())
+
+    def gap_rows(self):
+        """(headers, rows) of the paper-vs-reality table, as text cells."""
         mix, sim, names = self.mix, self.sim, self.sim.names
         planned = sum(mix.plan.values())
         touch = work_content(self.plant, mix.plan)
@@ -124,9 +128,12 @@ class ScenarioResult:
         planned_rw = (f"{self.plant['simulation']['rework']['rate']:.0%}"
                       if self.scenario.get("plan_with_rework") else "not planned")
         rows.append(["Rework rate (SUVs)", planned_rw, f"{rw:.1%} ± {half:.1%}", ""])
-        return table(["", "Paper (LP)", "Reality (simulation)", "Gap"], rows)
+        return ["", "Paper (LP)", "Reality (simulation)", "Gap"], rows
 
     def station_table(self):
+        return table(*self.station_rows())
+
+    def station_rows(self):
         rows = []
         for s in self.sim.order:
             lp = self.mix.stations.get(s)
@@ -134,7 +141,7 @@ class ScenarioResult:
             rows.append([self.sim.names[s], f"{lp.utilisation:.0%}" if lp else "not planned",
                          f"{active:.0%} ± {half:.1%}", f"{self.sim.station(s, 'blocked')[0]:.0%}",
                          f"{self.sim.station(s, 'queue')[0]:.1f}"])
-        return table(["Station", "Load on paper", "Active in simulation", "Blocked", "Queue"], rows)
+        return ["Station", "Load on paper", "Active in simulation", "Blocked", "Queue"], rows
 
 
 def explain(r):
@@ -162,6 +169,9 @@ class LoopResult:
     summary: str = ""
 
     def comparison(self):
+        return table(*self.comparison_rows())
+
+    def comparison_rows(self):
         base = self.results[0]
         rows = []
         for r in self.results:
@@ -177,8 +187,8 @@ class LoopResult:
                          f"{cars / planned - 1:+.1%}", eur(margin),
                          "-" if r is base else f"{eur(diff)} ± {eur(dhalf)}".replace("€-", "-€"),
                          r.sim.names[r.sim.bottleneck]])
-        return table(["Scenario", "Plan cars", "Simulated cars", "Gap", "Simulated margin",
-                      "vs base (paired CI)", "Bottleneck"], rows)
+        return ["Scenario", "Plan cars", "Simulated cars", "Gap", "Simulated margin",
+                "vs base (paired CI)", "Bottleneck"], rows
 
     def report(self):
         parts = []
@@ -207,6 +217,11 @@ def run_scenario(plant, scenario, **sim_kwargs):
 def run_loop(plant, scenarios=None, **sim_kwargs):
     """Run each scenario (the first is the base for the paired comparison)."""
     results = [run_scenario(plant, s, **sim_kwargs) for s in scenarios or SCENARIOS]
+    return LoopResult(results, summarise(results))
+
+
+def summarise(results):
+    """Plain-English lines for each scenario + the best one by simulated margin."""
     done = [r for r in results if r.sim is not None]
     lines = [explain(r) for r in done]
     if len(done) > 1:
@@ -220,4 +235,4 @@ def run_loop(plant, scenarios=None, **sim_kwargs):
             lines.append(f"Best by simulated margin: {best.name}, {eur(diff)} ± {eur(half)} a week "
                          f"more than the base plan really earns (the LP alone promised "
                          f"{eur(paper)}).".replace("€-", "-€"))
-    return LoopResult(results, "\n".join(lines))
+    return "\n".join(lines)
