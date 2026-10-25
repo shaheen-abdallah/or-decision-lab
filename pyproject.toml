@@ -1,0 +1,32 @@
+[project]
+name = "plantlab"
+version = "0.1.0"
+description = "Car plant decision lab: plan a fictional car assembly plant with OR (CPLEX), then stress-test it with simulation."
+requires-python = ">=3.10"
+dependencies = [
+    "docplex>=2.28",
+    "cplex>=22.1",   # IBM CPLEX Community Edition (max 1,000 variables / constraints)
+    "pyyaml>=6.0",
+    "simpy>=4.1",    # discrete-event simulation
+    "scipy>=1.11",   # distribution fitting, KS test, t-intervals
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+plantlab = "plantlab.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+plantlab = ["*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
