@@ -1,6 +1,22 @@
 # Car plant decision lab
 
-**Status:** done (phase 3 of 3, 25.10.2026): the OR core plans the plant with IBM CPLEX, a SimPy simulation stress-tests the plan, what-ifs compare paper with reality, and a Streamlit app shows it all. Recommendations: [docs/memo.md](docs/memo.md).
+**Status:** v2 in progress. The lab becomes **OR models for decision makers**: build a model without code, IBM CPLEX solves it and explains the answer in plain words. Phase 1 of 4 done (26.10.2026): the shared engine and the first model, *Where should I ship from?* (transportation + transshipment). The car plant below (v1, done 25.10.2026) stays as the worked example. Recommendations from v1: [docs/memo.md](docs/memo.md).
+
+## v2: OR models for decision makers (no code)
+A home page asks business questions ("Where should I ship from?", "How much of each product should I make?", ...); each opens a visual builder on an editable example. Live now: **transport** (min-cost flow LP). Coming next: product mix, shortest route, maximum flow, production planning, assignment, staffing.
+
+On the transport page you:
+- **build the network** from city names (bundled GeoNames list, no live geocoding), drag places on a canvas, draw routes by dragging, or paste a table from Excel/CSV; costs come from road km × cost per km and stay editable per route;
+- **solve** with CPLEX and see the flows on the canvas and as routes on a map;
+- move **live sliders** (supplies, orders, cost per km, one route's cost) and watch cost and flows change;
+- read **"What limits you?"**: shadow prices and their ranges in words ("One more pallet at Stuttgart saves €15.00, for the next 80");
+- **lock or ban a route** and get the **price of the rule** ("costs €1,257 on its own");
+- make it **infeasible** and get the **cheapest fixes** from an elastic re-solve ("+250 pallets at Stuttgart → €15,281"), each one a click to apply;
+- **beat the solver**: type a gut-feeling plan, score it, reveal the optimum and where the gap comes from (reduced costs and unused capacity, summing exactly to the gap);
+- save **scenarios** and compare them side by side (cost, what changed, plan changes, bottlenecks), download/upload as JSON;
+- copy a **manager summary** and flip **"Show the math"**: the general model and the exact LP with your numbers, next to each limit in words.
+
+Every model type plugs into one engine (`src/plantlab/engine/`): validate in plain words → docplex model → CPLEX → plan, duals, ranges, slack; elastic fixes, price of a rule, plan scoring, scenarios and LaTeX come free for the next models.
 
 **Question:** How should a mixed-model car assembly plant (Sedan + SUV) plan its week: what to build, how to lay out the line, whom to staff on which shift, and where to buy parts from? And does that plan survive real-world variability?
 
@@ -33,7 +49,7 @@ A SimPy model builds the plan on the same line with what the LP leaves out: rand
 The LP loads paint and the test cell to 100%. Rework makes the test cell need about 106%, and a station planned at 100% loses output to every disturbance. A car spends 3.6 h in the plant for 1.3 h of work.
 
 ## The app
-`streamlit run app/streamlit_app.py` opens four pages:
+`streamlit run app/Home.py` opens the home page, the transport builder and the car plant example (four pages):
 - **Plan (OR):** the four CPLEX models with charts: station loads and shadow prices, the balanced line against the takt, staffing per shift, supplier flows.
 - **Simulate:** the plan on the simulated line: KPIs with confidence intervals, paper vs reality, load on paper vs active and blocked time per station, the fitted distributions.
 - **What-if:** the three built-in scenarios, plus your own (paint units, off-road cells, buffers, rework rate, availability). CPLEX re-plans, SimPy re-simulates, in about two seconds.
@@ -44,7 +60,7 @@ Needs Python 3.10–3.14 (uses the free IBM CPLEX Community Edition, limited to 
 ```bash
 uv venv --python 3.12
 uv pip install -e ".[dev,app]"            # add ai for the optional assistant: ".[dev,app,ai]"
-.venv/bin/streamlit run app/streamlit_app.py
+.venv/bin/streamlit run app/Home.py
 .venv/bin/python -m plantlab plan         # the four CPLEX models
 .venv/bin/python -m plantlab fit          # input analysis: fitted distributions + KS test
 .venv/bin/python -m plantlab simulate     # KPIs with 95% CIs, bottleneck
@@ -54,7 +70,7 @@ uv pip install -e ".[dev,app]"            # add ai for the optional assistant: "
 For the Ask page: `export ANTHROPIC_API_KEY=...` before `streamlit run`.
 
 ## Data
-All plant data is invented for this project. Station names follow a generic car assembly flow; no real plant, company or course case is used.
+All plant and transport numbers are invented for this project. Station names follow a generic car assembly flow; no real plant, company or course case is used. City names and coordinates: [GeoNames](https://www.geonames.org) (CC BY 4.0), filtered by `src/plantlab/geo/make_cities.py`.
 
 ## Repo map
 See [INDEX.md](INDEX.md). Decisions in `decisions/log.md`, one summary per work session in `sessions/`.

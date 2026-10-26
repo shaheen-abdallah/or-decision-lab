@@ -1,11 +1,9 @@
-"""Car plant decision lab: the app.
-
-    streamlit run app/streamlit_app.py
+"""Worked example: the car plant (the first version of the lab, kept as an example).
 
 Pages: Plan (the four CPLEX models) · Simulate (the plan on a SimPy line, paper vs reality) ·
 What-if (the three built-in scenarios + your own) · Ask (Claude turns a question into a scenario;
 only shown when ANTHROPIC_API_KEY is set). Every number comes from the same code as the CLI
-(`python -m plantlab ...`); the app only runs it and shows the results.
+(`python -m plantlab ...`); the app only runs it and shows the results. `Home.py` adds the pages.
 """
 
 import json
@@ -21,8 +19,6 @@ from plantlab.optimize.report import eur
 from plantlab.plant import load_plant
 from plantlab.simulate.experiment import ci
 from plantlab.simulate.fitting import fit_plant
-
-st.set_page_config(page_title="Car plant decision lab", page_icon="🚗", layout="wide")
 
 PLANT = load_plant()
 BASE = loop.SCENARIOS[0]
@@ -338,14 +334,11 @@ def ask_page():
             show_scenario(answer.result, run(BASE))
 
 
-pages = [st.Page(plan_page, title="Plan (OR)", icon=":material/factory:", url_path="plan", default=True),
-         st.Page(simulate_page, title="Simulate", icon=":material/timeline:", url_path="simulate"),
-         st.Page(what_if_page, title="What-if", icon=":material/science:", url_path="what-if")]
-if assistant.available():
-    pages.append(st.Page(ask_page, title="Ask", icon=":material/chat:", url_path="ask"))
-
-with st.sidebar:
-    st.markdown("**Car plant decision lab**  \nPlan a car plant with OR (IBM CPLEX), then "
-                "stress-test the plan with simulation (SimPy).")
-    st.caption("Abdallah Shaheen · all plant data is invented")
-st.navigation(pages).run()
+def pages():
+    """The car plant pages for st.navigation (Ask only with an API key)."""
+    out = [st.Page(plan_page, title="Plan (OR)", icon=":material/factory:", url_path="plan"),
+           st.Page(simulate_page, title="Simulate", icon=":material/timeline:", url_path="simulate"),
+           st.Page(what_if_page, title="What-if", icon=":material/science:", url_path="what-if")]
+    if assistant.available():
+        out.append(st.Page(ask_page, title="Ask", icon=":material/chat:", url_path="ask"))
+    return out

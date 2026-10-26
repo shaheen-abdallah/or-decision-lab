@@ -1,7 +1,7 @@
 [project]
 name = "plantlab"
 version = "0.1.0"
-description = "Car plant decision lab: plan a fictional car assembly plant with OR (CPLEX), then stress-test it with simulation."
+description = "OR models for decision makers: build a model without code, CPLEX solves it and explains the answer; a car plant as the worked example."
 requires-python = ">=3.10"
 dependencies = [
     "docplex>=2.28",
@@ -12,7 +12,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-app = ["streamlit>=1.50", "pandas>=2", "altair>=5"]   # the app: streamlit run app/streamlit_app.py
+app = ["streamlit>=1.50", "pandas>=2", "altair>=5", "pydeck>=0.9",
+       "streamlit-flow-component==1.6.1"]   # the app: streamlit run app/Home.py
 ai = ["anthropic>=2.3"]                                 # optional assistant (needs ANTHROPIC_API_KEY)
 dev = ["pytest>=8"]
 
@@ -27,7 +28,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-plantlab = ["*.yaml"]
+plantlab = ["*.yaml", "geo/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

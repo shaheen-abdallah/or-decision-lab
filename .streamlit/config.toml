@@ -1,0 +1,7 @@
+# Projector-ready: light theme, larger text (Prof. teaching with it on a 1080p beamer)
+[theme]
+base = "light"
+baseFontSize = 17
+
+[browser]
+gatherUsageStats = false
