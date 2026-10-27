@@ -7,7 +7,7 @@
 | `pyproject.toml` | Package and dependencies (docplex, cplex, pyyaml, simpy, scipy; extras: `app` streamlit + pydeck + streamlit-flow-component, `ai` anthropic, `dev` pytest) |
 | `.streamlit/config.toml` | Light theme, larger text (projector-ready) |
 | `src/plantlab/engine/` | v2 shared engine: `core.py` (Builder over docplex, solve → Result with duals/ranges/slack, elastic fixes, price of a rule, scoring a user's plan), `words.py` (results in plain words), `latex.py` (show the math), `scenarios.py` (compare, JSON), `paste.py` (Excel/CSV paste) |
-| `src/plantlab/models/` | v2 model types: `transport.py` (min-cost flow: transportation + transshipment, templates, paste, manager summary), `registry.py` (home-page cards) |
+| `src/plantlab/models/` | v2 model types: `transport.py` (min-cost flow: transportation + transshipment, templates, paste, manager summary), `network.py` (shortest route + Dijkstra steps, maximum flow + min cut), `mix.py` (product mix + graphical method: lines, corners, region), `registry.py` (home-page cards) |
 | `src/plantlab/geo/` | Bundled city list `cities.csv` (GeoNames, CC BY 4.0; rebuilt by `make_cities.py`), search, road km |
 | `src/plantlab/plant.yaml` | The fictional plant: products, stations, line tasks, workforce, suppliers, simulation settings |
 | `src/plantlab/plant.py` | Loads `plant.yaml`, shared numbers (minutes per week, shifts) |
@@ -19,10 +19,14 @@
 | `app/Home.py` | The app entry (`streamlit run app/Home.py`): navigation, sidebar |
 | `app/pages/home.py` | Home: question-first cards, "describe your problem" placeholder, car plant links |
 | `app/pages/transport.py` | Where should I ship from? Canvas + map, answer, math, tabs: build · live sliders · what limits you · rules · beat the solver · scenarios |
+| `app/lab.py` | Shared page pieces for the newer pages: state + cached solve, fixes, show the math, rules, beat-the-solver feedback, scenarios |
+| `app/network_page.py` + `app/pages/shortest.py`, `maxflow.py` | Shortest route and maximum flow on one canvas + map; teach tab (Dijkstra step by step / the minimum cut) |
+| `app/pages/mix.py` | How much of each product? Graphical method (Altair), teach mode, live sliders, tabs as above |
+| `requirements.txt` | What Streamlit Community Cloud installs (Python 3.12) |
 | `app/car_plant.py` | Worked example (v1 app): Plan (OR) · Simulate · What-if · Ask |
 | `docs/memo.md` | One-page recommendations memo from the scenario results |
 | `docs/demo.gif` | App walk-through for the README |
-| `tests/` | pytest: hand-solved small cases per model, M/M/1 check, flow conservation, reproducibility, loop, CLI, assistant (fake client, no API); `test_engine_transport.py` for the v2 engine (optimum, duals, ranges, price of a rule, elastic fixes, gap decomposition, LaTeX, scenarios, paste, cities) |
+| `tests/` | pytest: hand-solved small cases per model, M/M/1 check, flow conservation, reproducibility, loop, CLI, assistant (fake client, no API); `test_engine_transport.py` for the v2 engine (optimum, duals, ranges, price of a rule, elastic fixes, gap decomposition, LaTeX, scenarios, paste, cities); `test_engine_mix.py`, `test_engine_network.py` for product mix, shortest route and max flow |
 | `decisions/log.md` | Every decision with its reasoning (append-only) |
 | `sessions/` | One summary per work session: done, decisions, next |
 

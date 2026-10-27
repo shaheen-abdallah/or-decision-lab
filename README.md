@@ -1,9 +1,18 @@
 # Car plant decision lab
 
-**Status:** v2 in progress. The lab becomes **OR models for decision makers**: build a model without code, IBM CPLEX solves it and explains the answer in plain words. Phase 1 of 4 done (26.10.2026): the shared engine and the first model, *Where should I ship from?* (transportation + transshipment). The car plant below (v1, done 25.10.2026) stays as the worked example. Recommendations from v1: [docs/memo.md](docs/memo.md).
+**Status:** v2 in progress. The lab becomes **OR models for decision makers**: build a model without code, IBM CPLEX solves it and explains the answer in plain words. Phases 1–2 of 4 done (27.10.2026): the shared engine and four models: *Where should I ship from?* (transportation + transshipment), *What's the cheapest way from A to B?* (shortest route), *How much can my network carry at most?* (maximum flow) and *How much of each product should I make?* (product mix). The car plant below (v1, done 25.10.2026) stays as the worked example. Recommendations from v1: [docs/memo.md](docs/memo.md).
 
 ## v2: OR models for decision makers (no code)
-A home page asks business questions ("Where should I ship from?", "How much of each product should I make?", ...); each opens a visual builder on an editable example. Live now: **transport** (min-cost flow LP). Coming next: product mix, shortest route, maximum flow, production planning, assignment, staffing.
+A home page asks business questions ("Where should I ship from?", "How much of each product should I make?", ...); each opens a visual builder on an editable example. Live now: **transport** (min-cost flow LP), **shortest route** and **maximum flow** (LPs on the same network canvas and map), **product mix** (LP with the graphical method). Coming next: minimum spanning tree, production planning, assignment, staffing, and an AI that suggests the model from a description.
+
+| Question | Model | What you see besides the optimum |
+|---|---|---|
+| Where should I ship from? | Transportation / transshipment (min-cost flow LP) | Flows on canvas + map, shadow prices of supplies and orders |
+| What's the cheapest way from A to B? | Shortest route (LP) | The route on canvas + map; **Dijkstra step by step** (teach mode) with the same answer as the LP; how much longer a road may get before the route changes; the closest alternatives |
+| How much can my network carry at most? | Maximum flow (LP) | Flow / capacity on every road; the **minimum cut** highlighted in red as the bottleneck (max-flow = min-cut) |
+| How much of each product should I make? | Product mix (LP) | With 2 products the **graphical method**: feasible region, limit lines (solid = binding), corners with their profit, iso-profit line, best corner; teach mode adds one limit at a time; sliders move the lines live |
+
+Every model has the same tools around it (below for transport): live sliders, "What limits you?", price of a rule, fixes when infeasible, beat the solver, scenarios, manager summary and "Show the math".
 
 On the transport page you:
 - **build the network** from city names (bundled GeoNames list, no live geocoding), drag places on a canvas, draw routes by dragging, or paste a table from Excel/CSV; costs come from road km × cost per km and stay editable per route;
@@ -68,6 +77,9 @@ uv pip install -e ".[dev,app]"            # add ai for the optional assistant: "
 .venv/bin/pytest                          # tests: hand-checked cases, M/M/1, flow conservation, assistant
 ```
 For the Ask page: `export ANTHROPIC_API_KEY=...` before `streamlit run`.
+
+## Deploy (Streamlit Community Cloud)
+`requirements.txt` installs the package and the app. On share.streamlit.io: New app → this repo, branch `main`, main file `app/Home.py`, Python 3.12. No secrets needed (the Ask page stays hidden without `ANTHROPIC_API_KEY`). The free tier sleeps when idle: open the link once a few minutes before a class or a demo.
 
 ## Data
 All plant and transport numbers are invented for this project. Station names follow a generic car assembly flow; no real plant, company or course case is used. City names and coordinates: [GeoNames](https://www.geonames.org) (CC BY 4.0), filtered by `src/plantlab/geo/make_cities.py`.
