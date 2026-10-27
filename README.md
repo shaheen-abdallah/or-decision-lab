@@ -1,4 +1,4 @@
-# Car plant decision lab
+# OR Decision Lab
 
 **Status:** v2 in progress. The lab becomes **OR models for decision makers**: build a model without code, IBM CPLEX solves it and explains the answer in plain words. Phases 1–2 of 4 done (27.10.2026): the shared engine and four models: *Where should I ship from?* (transportation + transshipment), *What's the cheapest way from A to B?* (shortest route), *How much can my network carry at most?* (maximum flow) and *How much of each product should I make?* (product mix). The car plant below (v1, done 25.10.2026) stays as the worked example. Recommendations from v1: [docs/memo.md](docs/memo.md).
 

@@ -11,7 +11,7 @@ import streamlit as st
 
 import car_plant
 
-st.set_page_config(page_title="OR decision lab", page_icon="🧭", layout="wide")
+st.set_page_config(page_title="OR Decision Lab", page_icon="🧭", layout="wide")
 
 pages = {
     "Decide": [st.Page("pages/home.py", title="Home", icon=":material/home:", default=True),
@@ -27,7 +27,7 @@ pages = {
 }
 
 with st.sidebar:
-    st.markdown("**OR decision lab**  \nBuild a decision model without code; IBM CPLEX solves it "
+    st.markdown("**OR Decision Lab**  \nBuild a decision model without code; IBM CPLEX solves it "
                 "and explains the answer in plain words.")
     st.caption("Abdallah Shaheen · all data is invented · city list: GeoNames (CC BY 4.0)")
 st.navigation(pages).run()

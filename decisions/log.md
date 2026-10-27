@@ -37,3 +37,4 @@
 - [2026-10-27] DECISION Product-mix graph in Altair (region as vertical slices for mark_area), no new dependency | REASONING Plotly isn't installed; a convex region is an area between its lower and upper chain | CONTEXT models/mix.py region_band, app/pages/mix.py
 - [2026-10-27] DECISION New pages share `app/lab.py`; the phase-1 transport page stays as it is | REASONING Avoid re-testing a working page days before the launch; move transport onto lab.py later | CONTEXT phase 2
 - [2026-10-27] DECISION Deploy via `requirements.txt` with `-e .` on Python 3.12 | REASONING Streamlit Community Cloud reads requirements.txt; a clean install from it was checked locally (all pages run) | CONTEXT README "Deploy"
+- [2026-10-27] DECISION Name: OR Decision Lab, repo or-decision-lab (renamed from car-plant-decision-lab) | REASONING Abdallah's call; the v2 tool is about OR models for decision makers, the car plant is one example | CONTEXT launch
