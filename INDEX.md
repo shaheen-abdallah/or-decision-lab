@@ -2,29 +2,24 @@
 
 | Path | What's in it |
 |---|---|
-| `README.md` | The project for readers: question, what it does, how to run |
+| `README.md` | The project for readers: the nine decisions, how to run, where things are |
 | `CLAUDE.md` | Rules for working in this repo |
-| `pyproject.toml` | Package and dependencies (docplex, cplex, pyyaml, simpy, scipy; extras: `app` streamlit + pydeck + streamlit-flow-component, `ai` anthropic, `dev` pytest) |
+| `pyproject.toml` | Package `orlab` and dependencies (ortools, pyyaml, simpy, scipy; extras: `app` streamlit + pandas + altair, `dev` pytest) |
+| `requirements.txt` | What Streamlit Community Cloud installs (Python 3.12) |
 | `.streamlit/config.toml` | Light theme, larger text (projector-ready) |
 | `redesign/` | Audit and design of the OR-Tools-style redesign (04.11.2026); `_handoff.md` in the root has the status |
-| `src/orlab/` | **The redesigned lab (v3):** `core.py` (Problem, Solution), `registry.py` (the catalogue by OR-Tools family), `problems/<key>.py` (EXAMPLE, solve, explain, maths in the docstring: product_mix GLOP, min_cost_flow, assignment) |
-| `app/guide.py` | One layout for every problem page: question → data → answer → what if → how it's modelled |
-| `src/plantlab/engine/` | v2 shared engine: `core.py` (Builder over docplex, solve → Result with duals/ranges/slack, elastic fixes, price of a rule, scoring a user's plan), `words.py` (results in plain words), `latex.py` (show the math), `scenarios.py` (compare, JSON), `paste.py` (Excel/CSV paste) |
-| `src/plantlab/models/` | v2 model types: `transport.py` (min-cost flow: transportation + transshipment, templates, paste, manager summary), `network.py` (shortest route + Dijkstra steps, maximum flow + min cut), `mix.py` (product mix + graphical method: lines, corners, region), `registry.py` (home-page cards) |
-| `src/plantlab/geo/` | Bundled city list `cities.csv` (GeoNames, CC BY 4.0; rebuilt by `make_cities.py`), search, road km |
-| `src/plantlab/plant.yaml` | The fictional plant: products, stations, line tasks, workforce, suppliers, simulation settings |
-| `src/plantlab/plant.py` | Loads `plant.yaml`, shared numbers (minutes per week, shifts) |
-| `src/plantlab/__main__.py` | CLI: `python -m plantlab plan / fit / simulate / loop` |
-| `src/plantlab/optimize/` | The four docplex models + `report.py` (text tables) + CLI (`python -m plantlab.optimize`) |
-| `src/plantlab/simulate/` | `fitting.py` (distributions + KS test), `model.py` (SimPy line), `experiment.py` (replications, CIs, bottleneck) |
-| `src/plantlab/loop.py` | OR plan → simulation → paper-vs-reality gap table; the what-if scenarios |
-| `src/plantlab/ai/assistant.py` | Optional: plain-words what-if → scenario (Claude tool use, strict schema) → run → explanation; only with `ANTHROPIC_API_KEY` |
-| `app/pages/` | `home.py` (catalogue) and one thin page per live problem (`product_mix.py`, `min_cost_flow.py`, `assignment.py`) |
+| `src/orlab/core.py` | `Problem` (card, module lookup, math + code from the module) and `Solution` (status, objective, headline, bullets, tables) |
+| `src/orlab/registry.py` | The catalogue: nine problems grouped by OR-Tools family, with solver, why-this-solver, sense and unit |
+| `src/orlab/problems/` | One file per decision: `product_mix` (GLOP), `min_cost_flow` (SimpleMinCostFlow), `assignment` (LinearSumAssignment), `line_balancing` (SCIP), `knapsack` (KnapsackSolver), `shift_scheduling` and `job_shop` (CP-SAT), `vehicle_routing` (routing solver), `simulation` (SimPy); each has EXAMPLE, solve, explain, maths in the docstring |
+| `src/orlab/plant.yaml`, `src/orlab/plant.py` | The fictional plant (products, stations, line tasks, suppliers, simulation settings) and its loader |
+| `src/orlab/simulate/` | The v1 simulation moved over: `fitting.py` (distributions + KS test), `model.py` (SimPy line), `experiment.py` (replications, CIs, bottleneck), `report.py` (text helpers) |
 | `app/Home.py` | The app entry (`streamlit run app/Home.py`): navigation by family, sidebar |
-| `requirements.txt` | What Streamlit Community Cloud installs (Python 3.12) |
-| `docs/memo.md` | One-page recommendations memo from the scenario results |
-| `docs/demo.gif` | App walk-through for the README |
-| `tests/` | pytest: hand-solved small cases per model, M/M/1 check, flow conservation, reproducibility, loop, CLI, assistant (fake client, no API); `test_engine_transport.py` for the v2 engine (optimum, duals, ranges, price of a rule, elastic fixes, gap decomposition, LaTeX, scenarios, paste, cities); `test_engine_mix.py`, `test_engine_network.py` for product mix, shortest route and max flow |
+| `app/guide.py` | One layout for every problem page: question → data → answer → what if → how it's modelled |
+| `app/pages/` | `home.py` (catalogue) and one thin page per problem (chart + what-if sliders) |
+| `docs/home.png`, `docs/page.png` | Screenshots for the README |
+| `docs/memo.md` | v1 recommendations memo from the scenario results (historic) |
+| `tests/` | pytest, 27 tests: hand-solved cases per problem (`test_orlab_<key>.py`), registry smoke test, simulation checks (M/M/1, flow conservation, fitting, reproducibility) |
 | `decisions/log.md` | Every decision with its reasoning (append-only) |
 | `sessions/` | One summary per work session: done, decisions, next |
 
+The v1 package `src/plantlab` (docplex/CPLEX models, engine, AI assistant) and its 51 tests were deleted on 04.11.2026; git tag `pre-redesign-plantlab` marks the last commit that has them.
