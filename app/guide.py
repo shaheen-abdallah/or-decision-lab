@@ -10,7 +10,7 @@ import copy
 import pandas as pd
 import streamlit as st
 
-from orlab.core import eur, num
+from orlab.core import num
 
 S = st.session_state
 
@@ -67,9 +67,9 @@ def page(problem, tables, chart=None, whatif=None, context=""):
             c1, c2 = st.columns([4, 8])
             if alt.ok:
                 delta = alt.objective - sol.objective
-                c1.metric("Objective with your change", eur(alt.objective),
-                          delta=f"{'+' if delta >= 0 else '−'}{eur(abs(delta))}",
-                          delta_color="normal" if problem.key != "min_cost_flow" else "inverse")
+                c1.metric("Objective with your change", problem.fmt(alt.objective),
+                          delta=f"{'+' if delta >= 0 else '−'}{problem.fmt(abs(delta))}",
+                          delta_color="normal" if problem.sense == "max" else "inverse")
                 c2.markdown(f"**{alt.headline}**")
                 for b in alt.bullets:
                     c2.markdown(f"- {b}")

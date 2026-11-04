@@ -10,7 +10,7 @@ PROBLEMS = [
             "Linear optimization", "Product mix (linear program)", "GLOP",
             "Cars per week are continuous enough to round; a linear program also gives the value "
             "of one more hour at every station (dual values).",
-            icon=":material/factory:", live=True),
+            icon=":material/factory:", live=True, sense="max"),
     Problem("min_cost_flow", "Which supplier ships seat sets to which plant?",
             "Network flows", "Transportation problem (minimum-cost flow)", "SimpleMinCostFlow",
             "Suppliers and plants form a network; the min-cost-flow solver finds the cheapest "
@@ -24,11 +24,11 @@ PROBLEMS = [
             "Integer optimization", "Assembly line balancing (SALBP-1, MIP)", "SCIP",
             "Which task goes to which station is a yes/no choice with precedence rules: "
             "a mixed-integer program.",
-            icon=":material/conveyor_belt:"),
+            icon=":material/conveyor_belt:", live=True, unit="stations"),
     Problem("knapsack", "Which improvement projects fit this year's budget?",
             "Integer optimization", "Knapsack", "KnapsackSolver",
             "Pick projects with the most gain under one budget: the classic knapsack.",
-            icon=":material/inventory:"),
+            icon=":material/inventory:", live=True, sense="max", unit="€/week"),
     Problem("shift_scheduling", "Who works which shift next week?",
             "Scheduling", "Employee shift scheduling", "CP-SAT",
             "Coverage, rest and fairness rules are logical constraints on yes/no decisions: "

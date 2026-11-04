@@ -35,6 +35,14 @@ class Problem:
     why_solver: str        # one sentence: why this solver fits
     icon: str = ":material/help:"
     live: bool = False
+    sense: str = "min"     # "min" or "max": tells the what-if panel whether a lower objective is good
+    unit: str = "€"        # how the objective is shown: "€", or a word like "stations"
+
+    def fmt(self, value):
+        """The objective as the page shows it."""
+        if self.unit == "€":
+            return eur(value)
+        return f"{num(value, 0 if float(value).is_integer() else 1)} {self.unit}"
 
     @property
     def module(self):
