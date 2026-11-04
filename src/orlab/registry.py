@@ -45,7 +45,7 @@ PROBLEMS = [
     Problem("simulation", "Does the plan survive real-world variability?",
             "Simulation", "Discrete-event simulation (SimPy)", "SimPy",
             "Random station times, breakdowns and rework are not an optimisation: simulate them.",
-            icon=":material/monitoring:"),
+            icon=":material/monitoring:", live=True, sense="max", unit="cars/week"),
 ]
 
 
