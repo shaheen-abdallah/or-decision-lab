@@ -41,11 +41,11 @@ Python 3.12, `ortools` 9.x (GLOP, SCIP, CP-SAT, routing, graph), Streamlit, pand
 ## Tests
 One test per problem on the example data with the hand calculation in the docstring (optimum, one dual or one binding constraint, one what-if). Plus: every registered problem solves its example in < 2 s; every page imports. Target ~25 focused tests replacing 51.
 
-## Phases
-- **2a (this session):** `orlab` package, `Solution` + registry + page renderer, home, pages 1 (product mix) and 2 (min-cost flow), tests, browser walkthrough, commits.
-- **2b:** pages 3, 4, 5 (assignment, line balancing, knapsack); README rewrite.
-- **3:** pages 6, 7, 8 (CP-SAT shift scheduling, job shop with a Gantt chart, VRP with a route map drawn on a plan grid); simulation page moved; home polish.
-- **4:** deploy on Streamlit Cloud (his sign-in), demo GIF, CV line "live online"; optional later: "describe your problem" AI, German switch.
+## Phases (status 04.11.2026, end of phase 3)
+- **2a: done.** `orlab` package, `Solution` + registry + page renderer, home, pages 1 (product mix) and 2 (min-cost flow), tests, browser walkthrough, commits.
+- **2b: done.** pages 3, 4, 5 (assignment, line balancing, knapsack); README rewrite.
+- **3: done** (plantlab deleted, tag `pre-redesign-plantlab`, 27 tests, README). Was: pages 6, 7, 8 (CP-SAT shift scheduling, job shop with a Gantt chart, VRP with a route map drawn on a plan grid); simulation page moved; home polish.
+- **4: open (needs his OK to push).** Deploy on Streamlit Cloud (his sign-in), demo GIF, CV line "live online"; optional later: "describe your problem" AI, German switch.
 
 ## Recommendation and the choices only he can make
 Recommendation: the table above, car plant as the single story, OR-Tools only, name stays "OR Decision Lab".

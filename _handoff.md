@@ -1,22 +1,23 @@
-# Handoff: OR Decision Lab redesign (04.11.2026)
+# Handoff: OR Decision Lab redesign (04.11.2026, end of phase 3)
 
-## Done (branch `claude/or-tools-redesign-84eb4b`, worktree `.claude/worktrees/or-tools-redesign-84eb4b`, nothing pushed)
-- Audit + design: `redesign/00-audit.md`, `redesign/01-design.md`. His choices (04.11): car plant as the single story, OR-Tools only, all 8 problems + simulation.
-- `src/orlab/`: `core.py` (Problem, Solution), `registry.py` (9 cards, 3 live), `problems/product_mix.py` (GLOP, duals), `min_cost_flow.py` (SimpleMinCostFlow), `assignment.py` (LinearSumAssignment). Each module: EXAMPLE, solve(data), explain(data), maths in the docstring.
-- `app/guide.py` renders every page: question → data (editable tables) → answer (headline, bullets, chart, tables) → what if (sliders) → how it's modelled (words / math / code / solver). `app/pages/<key>.py` are ~40 lines each.
-- Tests: `tests/test_orlab_*.py`, 12 green. The old 51 `plantlab` tests still run; 2 fail for environment reasons only (no `anthropic` extra; `pytest.approx` on a list of tuples in `test_engine_mix.py`).
+## Done (branch `claude/or-tools-redesign-p2-4e5e73`, worktree `.claude/worktrees/or-tools-redesign-p2-4e5e73`, nothing pushed)
+- All nine pages live and browser-checked: product mix (GLOP), min-cost flow, assignment, line balancing (SCIP, two-stage: fewest stations then smoothest), knapsack (KnapsackSolver, shows the greedy gap), shift scheduling and job shop (CP-SAT, Gantt), vehicle routing (routing solver, map), simulation (SimPy, moved from v1 into `src/orlab/simulate/`).
+- `Problem` got `sense` ("min"/"max") and `unit` so the what-if panel formats and colours each objective correctly.
+- `src/plantlab` (42 files) and its 11 test files deleted; tag `pre-redesign-plantlab` (commit 338e0ec) holds the last version with them. docplex/cplex/anthropic gone from `pyproject.toml`. Old `docs/demo.gif` removed; `docs/home.png` and `docs/page.png` are the README screenshots (800 px, from the browser pane).
+- 27 tests green (`.venv/bin/pytest`), each with the hand calculation in its docstring. README and INDEX rewritten.
 
-## Next (phase 2b, then 3, 4)
-1. Pages 4–5: `line_balancing` (SCIP MIP, data from `src/orlab/plant.yaml` line_balancing; v1 code in `src/plantlab/optimize/line_balancing.py` shows the formulation), `knapsack` (KnapsackSolver; invent 8 improvement projects with cost and €/week gain). Flip `live=True` in the registry, add `app/pages/<key>.py`, one test each.
-2. Phase 3: `shift_scheduling` and `job_shop` (CP-SAT; job shop gets an Altair Gantt), `vehicle_routing` (routing solver, depot + 8 dealers on a grid), `simulation` page (move `src/plantlab/simulate/` + `plant.py` into `orlab`, then delete `src/plantlab`, its tests, docplex/cplex from pyproject; show him the deletion list first).
-3. README rewrite (OR-Tools story, screenshot), `docs/demo.gif` redo, INDEX.md cleanup (rows for `plantlab` go when it goes).
-4. Phase 4: his OK to push + Streamlit Cloud deploy (`requirements.txt` is ready: `-e .`, streamlit, pandas, altair); CV line "live online".
+## Next (phase 4, needs his OK)
+1. Merge this branch into `main` (the branch `claude/or-tools-redesign-84eb4b` is the same work up to 566ecc3; this one continues it) and push to GitHub.
+2. Streamlit Community Cloud deploy (his sign-in at share.streamlit.io; `requirements.txt` is ready), then the CV line "live online".
+3. Better screenshots at full resolution or a short GIF (`docs/`), home polish if he wants.
+4. Optional later: "describe your problem" AI, German switch.
 
 ## How to run
-    .venv/bin/pytest -q tests/test_orlab_*.py
-    .venv/bin/streamlit run app/Home.py          # or the launch config `car-plant-lab` (port 8511)
+    .venv/bin/pytest -q
+    .venv/bin/streamlit run app/Home.py          # or the launch config `car-plant-lab` (port 8512)
 The worktree has its own `.venv` (uv, Python 3.12, `-e .[app,dev]` + ortools). Streamlit does not hot-reload `app/guide.py` or `src/`: restart the server after editing them.
 
-## Open questions for him
-- Merge this branch into `main` now, or after phase 3? (Nothing is pushed either way.)
-- OK to delete `src/plantlab` once the simulation has moved (phase 3)?
+## Gotchas
+- The routing solver runs guided local search for 0.8 s per solve (`data["ms"]` overrides it; tests use 200 ms); its answer is "very good, not proven optimal" and the page says so.
+- The simulation page runs 10 replications (about 1 s); the registry smoke test allows 3 s per example.
+- Rows with `0` minutes in the job shop skip that station; empty costs in assignment / min-cost flow mean "not allowed".
