@@ -1,24 +1,24 @@
 [project]
-name = "plantlab"
+name = "or-decision-lab"
 version = "0.1.0"
-description = "OR models for decision makers: build a model without code, CPLEX solves it and explains the answer; a car plant as the worked example."
+description = "OR Decision Lab: one car plant, nine decisions, each solved by Google OR-Tools and explained in words, math and code."
 requires-python = ">=3.10"
 dependencies = [
-    "docplex>=2.28",
-    "cplex>=22.1",   # IBM CPLEX Community Edition (max 1,000 variables / constraints)
+    "ortools>=9.10",  # GLOP, SCIP, CP-SAT, routing, graph solvers
+    "docplex>=2.28",  # v1 package `plantlab` only; goes when the simulation moves to orlab
+    "cplex>=22.1",
     "pyyaml>=6.0",
     "simpy>=4.1",    # discrete-event simulation
     "scipy>=1.11",   # distribution fitting, KS test, t-intervals
 ]
 
 [project.optional-dependencies]
-app = ["streamlit>=1.50", "pandas>=2", "altair>=5", "pydeck>=0.9",
-       "streamlit-flow-component==1.6.1"]   # the app: streamlit run app/Home.py
+app = ["streamlit>=1.50", "pandas>=2", "altair>=5"]   # the app: streamlit run app/Home.py
 ai = ["anthropic>=2.3"]                                 # optional assistant (needs ANTHROPIC_API_KEY)
 dev = ["pytest>=8"]
 
 [project.scripts]
-plantlab = "plantlab.__main__:main"
+plantlab = "plantlab.__main__:main"   # v1 CLI, kept until the simulation moves
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -29,7 +29,5 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 plantlab = ["*.yaml", "geo/*.csv"]
+orlab = ["*.yaml"]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]

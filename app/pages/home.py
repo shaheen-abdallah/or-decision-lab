@@ -1,38 +1,25 @@
-"""Home: question-first cards, one per model type (live ones open their builder)."""
+"""Home: the catalogue, grouped like the OR-Tools guides."""
 
 import streamlit as st
 
-import car_plant
-from plantlab.models.registry import CARDS
+from orlab.registry import FAMILIES, PROBLEMS
 
-st.title("Which decision are you facing?")
-st.markdown("Pick the question closest to yours. Each one opens on an example you can change: "
-            "drag, type or paste from Excel. **IBM CPLEX** finds the best answer and explains it in plain words.")
+st.title("One car plant, nine decisions")
+st.markdown("Plant West builds Sedans and SUVs. Every week its managers face the decisions below. "
+            "Each page states the question, shows the data, lets **Google OR-Tools** solve it, "
+            "and explains the model in words, math and code.")
 
-for group in dict.fromkeys(c.group for c in CARDS):
-    st.subheader(group)
-    cards = [c for c in CARDS if c.group == group]
-    cols = st.columns(4)
-    for col, c in zip(cols, cards):
-        with col.container(border=True, height=290):
-            st.markdown(f"#### {c.question}")
-            st.caption(c.or_name)
-            if c.live:
-                st.page_link(c.page, label="Open the builder", icon=":material/arrow_forward:")
+cols = st.columns(3)
+i = 0
+for family in FAMILIES:
+    for p in (p for p in PROBLEMS if p.family == family):
+        with cols[i % 3].container(border=True):
+            st.markdown(f"##### {p.question}")
+            st.caption(f"{p.family} · {p.model} · {p.solver}")
+            if p.live:
+                st.page_link(f"pages/{p.key}.py", label="Open", icon=":material/arrow_forward:")
             else:
                 st.caption(":material/schedule: Coming next")
-            st.write(c.blurb)
+        i += 1
 
-st.subheader("Not sure? Describe your problem")
-st.text_area("Your problem in a few sentences", disabled=True, label_visibility="collapsed",
-             placeholder="e.g. We have three warehouses and twelve stores. Trucks cost about €1.50 a km. "
-                         "Which warehouse should serve which store?")
-st.caption("Coming in the next version: the AI suggests the model and fills in the builder. "
-           "You check it in plain words before anything is solved.")
-
-st.subheader("Worked example: a car plant")
-st.write("Plan a mixed-model car assembly plant with four CPLEX models, then stress-test the plan "
-         "with a SimPy simulation.")
-cols = st.columns(4)
-for col, page in zip(cols, car_plant.pages()):
-    col.page_link(page, label=page.title, icon=page.icon)
+st.caption("Built with Python, Google OR-Tools, SimPy and Streamlit. Source on GitHub.")

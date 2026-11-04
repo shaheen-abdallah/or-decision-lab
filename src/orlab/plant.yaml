@@ -1,0 +1,122 @@
+# A fictional mixed-model car assembly plant ("Plant West").
+# All numbers are invented for this project. They are sized to look like a
+# small, low-volume plant (about 170 cars a day), not copied from any real plant.
+
+plant:
+  name: Plant West
+  currency: EUR
+  days_per_week: 5
+  shifts:                      # 07:00-15:00 and 15:00-23:00
+    early: {start: "07:00", hours: 8, volume_share: 0.5, wage_premium: 0.00}
+    late:  {start: "15:00", hours: 8, volume_share: 0.5, wage_premium: 0.10}
+  availability: 0.90           # share of shift time a station really runs (breakdowns, changeovers)
+
+products:
+  sedan: {name: Sedan, margin_eur: 2300, demand_min: 120, demand_max: 600}
+  suv:   {name: SUV,   margin_eur: 3400, demand_min: 80,  demand_max: 600}
+# margin_eur: contribution margin per car (price minus material and variable cost)
+# demand_min: fleet contracts we must build; demand_max: what sales can sell per week
+
+# Stations in flow order.
+#   units:    identical parallel workplaces / cells at the station
+#   minutes:  station time one car needs (0 = the model skips this station)
+#   crew:     operators working on a car at the same time
+#   skilled:  needs certified staff (no temporary workers)
+#   overtime_eur_per_h: cost of running one unit one extra hour (crew + energy)
+stations:
+  - {id: body,     name: Body welding,              units: 2, minutes: {sedan: 7.5,  suv: 9.0},  crew: 2, skilled: false, overtime_eur_per_h: 450}
+  - {id: reinf,    name: SUV underbody reinforcement, units: 1, minutes: {sedan: 0,  suv: 5.0},  crew: 2, skilled: false, overtime_eur_per_h: 250}
+  - {id: paint,    name: Paint shop,                units: 2, minutes: {sedan: 9.0,  suv: 11.0}, crew: 2, skilled: true,  overtime_eur_per_h: 900}
+  - {id: inspect,  name: Paint inspection,          units: 1, minutes: {sedan: 3.5,  suv: 4.5},  crew: 2, skilled: true,  overtime_eur_per_h: 180}
+  - {id: wiring,   name: Wiring harness,            units: 2, minutes: {sedan: 8.5,  suv: 10.5}, crew: 3, skilled: false, overtime_eur_per_h: 260}
+  - {id: trim,     name: Interior trim,             units: 3, minutes: {sedan: 12.5, suv: 14.5}, crew: 4, skilled: false, overtime_eur_per_h: 320}
+  - {id: marriage, name: Powertrain marriage,       units: 2, minutes: {sedan: 7.0,  suv: 9.0},  crew: 3, skilled: false, overtime_eur_per_h: 300}
+  - {id: final,    name: Final assembly,            units: 2, minutes: {sedan: 8.0,  suv: 9.0},  crew: 4, skilled: false, overtime_eur_per_h: 320}
+  - {id: eol,      name: End-of-line test,          units: 1, minutes: {sedan: 3.5,  suv: 4.0},  crew: 2, skilled: true,  overtime_eur_per_h: 220}
+  - {id: offroad,  name: SUV off-road calibration,  units: 1, minutes: {sedan: 0,    suv: 8.0},  crew: 1, skilled: true,  overtime_eur_per_h: 200}
+
+# Line balancing: the wiring + interior trim line, one paced line.
+# Task times in seconds per car; the model uses the mix-weighted average.
+# The cycle time (takt) comes from the weekly plan unless cycle_time_s is set.
+line_balancing:
+  line: Wiring and trim line
+  cycle_time_s: null
+  tasks:
+    - {id: T01, name: Remove doors,                 seconds: {sedan: 50,  suv: 55},  after: []}
+    - {id: T02, name: Floor wiring harness,         seconds: {sedan: 120, suv: 150}, after: [T01]}
+    - {id: T03, name: Cockpit wiring harness,       seconds: {sedan: 100, suv: 120}, after: [T01]}
+    - {id: T04, name: Roof harness and antenna,     seconds: {sedan: 60,  suv: 75},  after: [T01]}
+    - {id: T05, name: Rear wiring and tail lights,  seconds: {sedan: 80,  suv: 95},  after: [T02]}
+    - {id: T06, name: Engine-bay harness,           seconds: {sedan: 100, suv: 130}, after: [T02]}
+    - {id: T07, name: Sound insulation,             seconds: {sedan: 60,  suv: 70},  after: [T02]}
+    - {id: T08, name: Carpet,                       seconds: {sedan: 70,  suv: 80},  after: [T07]}
+    - {id: T09, name: Headliner,                    seconds: {sedan: 80,  suv: 90},  after: [T04]}
+    - {id: T10, name: Cockpit module,               seconds: {sedan: 150, suv: 160}, after: [T03]}
+    - {id: T11, name: Steering column,              seconds: {sedan: 50,  suv: 55},  after: [T10]}
+    - {id: T12, name: Centre console,               seconds: {sedan: 60,  suv: 70},  after: [T10, T08]}
+    - {id: T13, name: Front seats,                  seconds: {sedan: 90,  suv: 100}, after: [T12]}
+    - {id: T14, name: Rear seats,                   seconds: {sedan: 60,  suv: 80},  after: [T08]}
+    - {id: T15, name: Door trim panels,             seconds: {sedan: 80,  suv: 90},  after: [T01]}
+    - {id: T16, name: Refit doors,                  seconds: {sedan: 60,  suv: 70},  after: [T15, T05, T06, T09, T11, T13, T14]}
+
+# Workforce: who staffs each station and shift.
+workforce:
+  net_minutes_per_shift: 408   # 480 min minus breaks, meetings, allowances
+  absence_rate: 0.08           # sickness and holidays: plan 8% more people
+  weekly_cost_eur:             # fully loaded, early shift (late shift adds wage_premium)
+    permanent: 1500
+    temporary: 1350            # agency worker
+    floater: 1620              # cross-trained and certified permanent, can cover any station
+  max_temporary_share: 0.15    # works council agreement: at most 15% temporary staff
+  max_floater_share_per_station: 1.0   # a station can lean on at most 1 floater-equivalent
+
+# Parts: seat sets (one per car) from three suppliers to the plants of the group.
+# Plant West's demand is its weekly plan; the sister plants' demand is fixed.
+parts_transport:
+  part: seat set
+  suppliers:
+    Saarbruecken: {capacity: 600}
+    Plzen:        {capacity: 700}
+    Poznan:       {capacity: 500}
+  plants:
+    Plant West:  {demand: plan}   # = cars per week from the production mix
+    Plant East:  {demand: 450}
+    Plant South: {demand: 300}
+  cost_eur:                        # freight cost per seat set
+    Saarbruecken: {Plant West: 8,  Plant East: 22, Plant South: 18}
+    Plzen:        {Plant West: 19, Plant East: 9,  Plant South: 12}
+    Poznan:       {Plant West: 26, Plant East: 13, Plant South: 21}
+  blocked:                         # routes not allowed (supplier not approved for that plant)
+    - [Poznan, Plant South]
+
+# Simulation (phase 2): what the weekly plan ignores. Station times vary, machines
+# break down, buffers fill up and SUVs that fail the off-road test come back.
+#   cv:     variability of the station time (standard deviation / mean)
+#   mttr:   mean repair minutes per breakdown. The mean running minutes between
+#           breakdowns follow from the plant's availability (90%):
+#           MTBF = MTTR x 0.90 / 0.10, so the simulation loses the same share of
+#           time as the plan assumes, only in random chunks.
+#   buffer: cars that fit in front of the station (default: buffer_size)
+simulation:
+  buffer_size: 3
+  stations:
+    body:     {cv: 0.06, mttr: 25}
+    reinf:    {cv: 0.10, mttr: 15}
+    paint:    {cv: 0.08, mttr: 30, buffer: 6}
+    inspect:  {cv: 0.15, mttr: 10}
+    wiring:   {cv: 0.15, mttr: 8}
+    trim:     {cv: 0.18, mttr: 8}
+    marriage: {cv: 0.10, mttr: 15}
+    final:    {cv: 0.15, mttr: 8}
+    eol:      {cv: 0.20, mttr: 12}
+    offroad:  {cv: 0.20, mttr: 15}
+  rework:                      # SUVs that fail off-road calibration are fixed and tested again
+    product: suv
+    found_at: offroad
+    rate: 0.06                 # share of off-road tests that fail
+    bay: {id: rework, name: Rework bay, units: 1, minutes: 25, cv: 0.40, overtime_eur_per_h: 150}
+  time_study_samples: 200      # invented observations per station and model (fitting.py)
+  replications: 20
+  warmup_weeks: 1              # the line starts empty; the first week is not measured
+  run_weeks: 1
+  seed: 2026
