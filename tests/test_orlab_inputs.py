@@ -54,6 +54,8 @@ def test_pages_folder_is_not_called_pages():
     assert not (app / "pages").exists()
     for p in (p for p in PROBLEMS if p.live):
         assert (app / "views" / f"{p.key}.py").exists()
+    for f in app.rglob("*.py"):                  # page links and switch_page calls point at views/
+        assert '"pages/' not in f.read_text(), f
 
 
 def test_product_mix_bottleneck_sentence_grammar():

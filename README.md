@@ -34,10 +34,20 @@ uv pip install -e ".[app,dev]"
 ```
 The tests solve every model on a case small enough to check by hand; the hand calculation is in each test's docstring.
 
+## Describe your problem (optional AI)
+Not sure which model fits? On the home page, describe the problem in a few sentences. An AI model (via [OpenRouter](https://openrouter.ai), default `openai/gpt-4o-mini`, set in `src/orlab/describe.py`) may only **pick one of the nine models and fill in its tables**; it never invents a new model. You then see the model in plain words (*You decide … / You want … / You are limited by …*), edit the numbers and click **Confirm**, which opens that page pre-filled. Nothing is solved before you confirm. If no model fits, it says so and names the closest one.
+
+It is off unless a key is set, so the public app and the tests run without one. To switch it on, either export the key:
+```bash
+export OPENROUTER_API_KEY=...
+```
+or put `OPENROUTER_API_KEY = "..."` into `.streamlit/secrets.toml` (git-ignored; on Streamlit Community Cloud, paste it under *App settings → Secrets*). One description costs a fraction of a cent.
+
 ## Where things are
 - `src/orlab/problems/<key>.py`: one file per decision with the example data, `solve(data)`, `explain(data)` and the math in the docstring. The app shows that docstring and that source, so page, math and code cannot drift apart.
 - `src/orlab/registry.py`: the catalogue (question, family, solver, why that solver).
 - `src/orlab/simulate/`, `src/orlab/plant.yaml`: the SimPy line and the plant's data.
+- `src/orlab/describe.py`, `app/describe_ui.py`: the optional "describe your problem" AI (tool schemas, checks, the home-page card).
 - `app/guide.py`: the one page layout; `app/views/<key>.py` adds a chart and the what-if sliders.
 
 All data is invented. Built by Abdallah Shaheen, Industrial Engineering student (German Jordanian University, exchange year at RPTU Kaiserslautern), as a portfolio of operations research models he can explain in an interview.
