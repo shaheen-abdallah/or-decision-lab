@@ -44,6 +44,11 @@ class Problem:
             return eur(value)
         return f"{num(value, 0 if float(value).is_integer() else 1)} {self.unit}"
 
+    def delta_text(self, delta):
+        """The what-if change for st.metric. Streamlit reads the arrow and colour from a leading ASCII '-',
+        so a typographic minus would show a better (lower) plan as a red up-arrow."""
+        return f"{'+' if delta >= 0 else '-'}{self.fmt(abs(delta))}"
+
     @property
     def module(self):
         return importlib.import_module(f"orlab.problems.{self.key}")

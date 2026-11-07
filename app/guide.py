@@ -68,7 +68,7 @@ def page(problem, tables, chart=None, whatif=None, context=""):
             if alt.ok:
                 delta = alt.objective - sol.objective
                 c1.metric("Objective with your change", problem.fmt(alt.objective),
-                          delta=f"{'+' if delta >= 0 else '−'}{problem.fmt(abs(delta))}",
+                          delta=problem.delta_text(delta),
                           delta_color="normal" if problem.sense == "max" else "inverse")
                 c2.markdown(f"**{alt.headline}**")
                 for b in alt.bullets:

@@ -66,3 +66,10 @@ def test_knapsack_left_out_list_uses_semicolons():
     """'Predictive maintenance, body shop' has a comma in its name, so the left-out list is joined with '; '."""
     sol = problem("knapsack").solve(problem("knapsack").example)
     assert any("Predictive maintenance, body shop; " in b for b in sol.bullets)
+
+
+def test_what_if_delta_uses_ascii_minus():
+    """Routing 407 km -> 356 km is a change of -51 km: the metric text must start with '-' (ASCII),
+    or Streamlit draws a red up-arrow for a shorter route."""
+    assert problem("vehicle_routing").delta_text(-51) == "-51 km"
+    assert problem("product_mix").delta_text(46000) == "+€46,000"
