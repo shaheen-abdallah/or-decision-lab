@@ -19,7 +19,7 @@ PROBLEMS = [
     Problem("assignment", "Which operator should run which station?",
             "Assignment", "Assignment problem", "LinearSumAssignment",
             "One operator per station, one station per operator: a dedicated assignment solver.",
-            icon=":material/assignment_ind:", live=True),
+            icon=":material/assignment_ind:", live=True, unit="min rework"),
     Problem("line_balancing", "How few stations does the trim line need?",
             "Integer optimization", "Assembly line balancing (SALBP-1, MIP)", "SCIP",
             "Which task goes to which station is a yes/no choice with precedence rules: "

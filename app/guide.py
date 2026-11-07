@@ -55,12 +55,12 @@ def page(problem, tables, chart=None, whatif=None, context=""):
         if sol.ok and chart:
             chart(data, sol)
         for name, rows in sol.tables.items():
-            with st.expander(name.capitalize(), expanded=(name == next(iter(sol.tables)))):
+            with st.expander(name[:1].upper() + name[1:], expanded=(name == next(iter(sol.tables)))):
                 st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
 
     if whatif and sol.ok:
         st.subheader("What if…")
-        st.caption("Move a slider; the solver re-runs in milliseconds.")
+        st.caption("Change a setting; the solver re-runs in milliseconds.")
         changed = whatif(copy.deepcopy(data), rev)
         if changed is not None:
             alt = problem.solve(changed)

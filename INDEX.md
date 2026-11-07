@@ -15,7 +15,7 @@
 | `src/orlab/simulate/` | The v1 simulation moved over: `fitting.py` (distributions + KS test), `model.py` (SimPy line), `experiment.py` (replications, CIs, bottleneck), `report.py` (text helpers) |
 | `app/Home.py` | The app entry (`streamlit run app/Home.py`): navigation by family, sidebar |
 | `app/guide.py` | One layout for every problem page: question → data → answer → what if → how it's modelled |
-| `app/pages/` | `home.py` (catalogue) and one thin page per problem (chart + what-if sliders) |
+| `app/views/` | `home.py` (catalogue) and one thin page per problem (chart + what-if sliders) |
 | `docs/home.png`, `docs/page.png` | Screenshots for the README |
 | `docs/memo.md` | v1 recommendations memo from the scenario results (historic) |
 | `tests/` | pytest, 27 tests: hand-solved cases per problem (`test_orlab_<key>.py`), registry smoke test, simulation checks (M/M/1, flow conservation, fitting, reproducibility) |

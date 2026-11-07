@@ -54,13 +54,20 @@ class Problem:
 
     def solve(self, data):
         t = time.perf_counter()
-        sol = self.module.solve(data)
+        try:
+            sol = self.module.solve(data)
+        except (TypeError, ValueError, KeyError):
+            sol = Solution("error", None, "Some input is missing or not a number.",
+                           [blank_cells(data, self.example) or "Check the tables, or press *Reset to the example*."])
         sol.seconds = time.perf_counter() - t
         sol.solver = sol.solver or self.solver
         return sol
 
     def explain(self, data):
-        return self.module.explain(data)
+        try:
+            return self.module.explain(data)
+        except (TypeError, ValueError, KeyError):
+            return {"decide": "–", "goal": "–", "limits": ["Fill in the empty cells to see the model in words."]}
 
     @property
     def math(self):
@@ -71,6 +78,22 @@ class Problem:
     @property
     def code(self):
         return inspect.getsource(self.module)
+
+
+def blank_cells(data, example=None):
+    """Plain-words list of the empty cells a user left in the tables (a cleared cell arrives as None).
+    Cells that are empty on purpose in the example (a route not approved) are not listed."""
+    def allowed(table, i, col):
+        rows = (example or {}).get(table)
+        return isinstance(rows, list) and i < len(rows) and col in rows[i] and rows[i][col] is None
+    found = [f"{table} row {i + 1}, column '{col}'"
+             for table, rows in data.items() if isinstance(rows, list)
+             for i, row in enumerate(rows) if isinstance(row, dict)
+             for col, v in row.items() if v is None and not allowed(table, i, col)]
+    if not found:
+        return ""
+    more = f" and {len(found) - 3} more" if len(found) > 3 else ""
+    return "Empty cell: " + "; ".join(found[:3]) + more + ". Fill it in or reset to the example."
 
 
 def eur(x, decimals=0):

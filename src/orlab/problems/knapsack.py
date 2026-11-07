@@ -74,7 +74,7 @@ def solve(data):
                (f"Greedy 'best gain per euro first' gets {eur(greedy_gain)}: the solver finds "
                 f"{eur(total - greedy_gain)} more." if total > greedy_gain
                 else "Here the greedy rule 'best gain per euro first' happens to find the same set."),
-               f"Left out: {', '.join(skipped) if skipped else 'nothing'}; {eur((budget - spent) * 1000)} unspent."]
+               f"Left out: {'; '.join(skipped) if skipped else 'nothing'}; {eur((budget - spent) * 1000)} unspent."]
     return Solution("optimal", float(total),
                     f"Fund {len(chosen)} projects: " + "; ".join(rows[i]["project"] for i in chosen) + ".",
                     bullets, {"projects": rows}, solver="KnapsackSolver",

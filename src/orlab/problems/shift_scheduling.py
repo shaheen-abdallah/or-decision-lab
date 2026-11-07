@@ -63,6 +63,15 @@ def solve(data):
     if need > can:
         return Solution("infeasible", None, f"{need} operator-shifts needed but the team can give at most {can}.",
                         ["Hire, allow more shifts per person, or lower the demand."])
+    for d in days:                                    # one shift a day: a day can't need more people than the team
+        if sum(demand[s, d] for s in SHIFTS) > len(ops):
+            return Solution("infeasible", None,
+                            f"{d} needs {sum(demand[s, d] for s in SHIFTS)} operators but the team has {len(ops)}.",
+                            ["Each operator works at most one shift a day: lower that day's demand or add an operator."])
+    late_need, late_can = sum(demand["late", d] for d in days), sum(int(o["max late"]) for o in ops)
+    if late_need > late_can:
+        return Solution("infeasible", None, f"{late_need} late shifts needed but the late-shift caps allow {late_can}.",
+                        ["Raise someone's 'max late' or lower the late-shift demand."])
 
     # 1. Declare the model.
     m = cp_model.CpModel()
@@ -91,7 +100,8 @@ def solve(data):
     status = solver.Solve(m)
     if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         return Solution("infeasible", None, "No schedule satisfies every rule.",
-                        ["The rest rule or the shift limits bite: relax one and re-solve."])
+                        ["Every day has enough people, so the rest rule (no late shift before an early one) "
+                         "or the minimum / maximum shifts per person bite: relax one and re-solve."])
     # 6. Read back.
     rows, late_counts = [], {}
     for o in ops:

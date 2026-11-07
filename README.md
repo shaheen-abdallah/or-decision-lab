@@ -38,6 +38,6 @@ The tests solve every model on a case small enough to check by hand; the hand ca
 - `src/orlab/problems/<key>.py`: one file per decision with the example data, `solve(data)`, `explain(data)` and the math in the docstring. The app shows that docstring and that source, so page, math and code cannot drift apart.
 - `src/orlab/registry.py`: the catalogue (question, family, solver, why that solver).
 - `src/orlab/simulate/`, `src/orlab/plant.yaml`: the SimPy line and the plant's data.
-- `app/guide.py`: the one page layout; `app/pages/<key>.py` adds a chart and the what-if sliders.
+- `app/guide.py`: the one page layout; `app/views/<key>.py` adds a chart and the what-if sliders.
 
 All data is invented. Built by Abdallah Shaheen, Industrial Engineering student (German Jordanian University, exchange year at RPTU Kaiserslautern), as a portfolio of operations research models he can explain in an interview.

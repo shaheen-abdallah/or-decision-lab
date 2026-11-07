@@ -17,7 +17,7 @@ for family in FAMILIES:
             st.markdown(f"##### {p.question}")
             st.caption(f"{p.family} · {p.model} · {p.solver}")
             if p.live:
-                st.page_link(f"pages/{p.key}.py", label="Open", icon=":material/arrow_forward:")
+                st.page_link(f"views/{p.key}.py", label="Open", icon=":material/arrow_forward:")
             else:
                 st.caption(":material/schedule: Coming next")
         i += 1

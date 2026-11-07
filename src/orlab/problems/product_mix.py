@@ -95,7 +95,8 @@ def solve(data):
     if bottlenecks:
         b = max(bottlenecks, key=lambda t: t[1])
         bullets.append(f"**{b[0]} is the bottleneck.** One more hour there is worth {eur(b[1])} a week"
-                       + (f"; {', '.join(n for n, _, _ in bottlenecks if n != b[0])} also run full." if len(bottlenecks) > 1 else "."))
+                       + (f"; {', '.join(others)} also {'runs' if len(others) == 1 else 'run'} full."
+                          if (others := [n for n, _, _ in bottlenecks if n != b[0]]) else "."))
     if spare:
         most = max(spare, key=lambda t: t[2])
         bullets.append(f"{len(spare)} stations have spare hours; {most[0]} has the most ({num(most[2], 1)} h).")
