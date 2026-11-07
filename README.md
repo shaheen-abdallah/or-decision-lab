@@ -2,7 +2,13 @@
 
 **One fictional car plant, nine decisions, each solved by Google OR-Tools and explained in words, math and code.**
 
-Plant West builds Sedans and SUVs. Every week its managers face the questions below. Each page of the app states the question, shows the data (editable), lets OR-Tools solve it in milliseconds, shows the answer with one chart and two or three plain-words findings, offers "what if" sliders, and ends with *How it's modelled*: the model in words, the math, the exact Python that solved it, and which solver did it and why. The layout follows the Google OR-Tools guides: declare the solver → variables → constraints → objective → solve → read the answer.
+**Live app:** (link after deploy) · **Walkthrough video:** [docs/walkthrough.mp4](docs/walkthrough.mp4) (about 1:45)
+
+Managers in a plant ask plain questions: how many of each model to build, which supplier ships to which plant, who works which shift, which van goes where. OR Decision Lab turns nine such questions from one invented car plant into optimisation and simulation models, solves them with Google OR-Tools (milliseconds) and SimPy (about a second), and answers in business words: the decision, the bottleneck, what one more hour or one more van is worth. Every page lets you edit the data, move a "what if" slider and re-solve, then opens the model itself: in words, the math, and the exact Python that produced the answer.
+
+![Walkthrough: product mix, what-if and the model](docs/walkthrough.gif)
+
+**Run it locally** (Python 3.12, [uv](https://docs.astral.sh/uv/)): `uv venv --python 3.12 && uv pip install -e ".[app,dev]" && .venv/bin/streamlit run app/Home.py`. No API key or account needed. To put it online, see [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ![Home: the catalogue](docs/home.png)
 
