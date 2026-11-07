@@ -8,3 +8,6 @@ __pycache__/
 .DS_Store
 ~$*
 .claude/
+
+# Streamlit secrets (API keys) never go into git
+.streamlit/secrets.toml

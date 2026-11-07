@@ -19,6 +19,9 @@ def _state(problem):
     key = f"data_{problem.key}"
     if key not in S:
         S[key] = {"data": copy.deepcopy(problem.example), "rev": 0}
+    prefill = S.get("prefill", {}).pop(problem.key, None)    # tables confirmed on "Describe your problem"
+    if prefill is not None:
+        S[key] = {"data": prefill, "rev": S[key]["rev"] + 1}
     return S[key]
 
 
